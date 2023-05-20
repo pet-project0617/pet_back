@@ -183,6 +183,11 @@
             <version>8.0.29</version>
         </dependency>
 		
+		<dependency>
+	      <groupId>org.mariadb.jdbc</groupId>
+	      <artifactId>mariadb-java-client</artifactId>
+	      <version>3.0.4</version>
+	  </dependency>
 
 		<!-- oracle 10g driver -->
 		<!--
