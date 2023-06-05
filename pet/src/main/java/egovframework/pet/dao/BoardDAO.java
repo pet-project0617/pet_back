@@ -4,6 +4,7 @@ import java.util.List;
 import org.egovframe.rte.psl.dataaccess.EgovAbstractMapper;
 import org.springframework.stereotype.Repository;
 
+import egovframework.let.cop.bbs.service.Board;
 import egovframework.let.cop.bbs.service.BoardVO;
 import egovframework.pet.vo.BoardTbVO;
 
@@ -48,5 +49,26 @@ public class BoardDAO extends EgovAbstractMapper {
      */
     public int selectBoardListCnt(BoardTbVO vo) throws Exception {
 	return (Integer)selectOne("BoardDAO.selectBoardListCnt", vo);
+    }
+    
+    /**
+     * 게시물 한 건에 대하여 상세 내용을 조회 한다.
+     *
+     * @param boardVO
+     * @return
+     * @throws Exception
+     */
+    public BoardTbVO selectBoardDetail(BoardTbVO boardVO) throws Exception {
+	return (BoardTbVO)selectOne("BoardDAO.selectBoardDetail", boardVO);
+    }
+    
+    /**
+     * 게시물 한 건의 조회수를 수정한다
+     *
+     * @param board
+     * @throws Exception
+     */
+    public void updateViews(BoardTbVO boardVO) throws Exception {
+    	update("BoardDAO.updateViews",boardVO);
     }
 }

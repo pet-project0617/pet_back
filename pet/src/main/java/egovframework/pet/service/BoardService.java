@@ -2,6 +2,7 @@ package egovframework.pet.service;
 
 import java.util.Map;
 
+import egovframework.let.cop.bbs.service.BoardVO;
 import egovframework.pet.vo.BoardTbVO;
 
 /**
@@ -24,13 +25,23 @@ import egovframework.pet.vo.BoardTbVO;
 public interface BoardService {
 
 	/**
-	 * 방명록에 대한 패스워드를 조회 한다.
+	 * 게시물 목록을 조회한다
 	 * @return
 	 * 
 	 * @param Board
 	 * @exception Exception Exception
 	 */
 	public Map<String, Object> selectBoardList(BoardTbVO vo)
+	  throws Exception;
+	
+	/**
+	 * 게시물 대하여 상세 내용을 조회 한다.
+	 * @return
+	 * 
+	 * @param boardVO
+	 * @exception Exception Exception
+	 */
+	public BoardTbVO selectBoardDetail(BoardTbVO boardVO)
 	  throws Exception;
 
 }

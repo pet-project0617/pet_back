@@ -2,7 +2,21 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="BoardDAO">
-
+	
+	<resultMap id="boardDetail" type="BoardTbVO">
+		<result property="seq" column="seq"/>
+		<result property="userId" column="user_id"/>
+		<result property="name" column="name"/>
+		<result property="content" column="content"/>
+		<result property="insertDate" column="insert_date"/>
+		<result property="atchFileId" column="ATCH_FILE_ID"/>
+		<result property="userSeq" column="user_seq"/>
+		<result property="deleteYn" column="delete_yn"/>
+		<result property="contentType" column="content_type"/>		
+		<result property="mDate" column="m_date"/>
+		<result property="views" column="views"/>
+	</resultMap>
+	
  	<select id="selectBoardList" parameterType="BoardTbVO" resultType="BoardTbVO">
 		
 			SELECT
@@ -10,7 +24,7 @@
 			FROM
 				board
 			WHERE 1=1
-		
+			and delete_yn = 'N'
 			ORDER BY seq ASC
 			LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
 						
@@ -24,5 +38,26 @@
 				board
 			WHERE 1=1
 	</select>
+	
+	<select id="selectBoardDetail" parameterType="BoardTbVO" resultMap="boardDetail">
+		
+			SELECT
+				seq, user_id, name, title, content, insert_date, ATCH_FILE_ID,
+				user_seq, delete_yn, content_type, m_date, views
+			FROM
+				board
+			WHERE
+				1=1
+			AND
+				seq = #{seq}	
+	</select>
  	
+ 	<update id="updateViews" parameterType="BoardTbVO">
+ 		
+			UPDATE board SET 
+				views = views +1
+			WHERE 1=1
+			AND seq = #{seq}
+ 		
+ 	</update>
 </mapper>

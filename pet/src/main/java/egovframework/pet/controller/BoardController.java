@@ -1,20 +1,32 @@
 package egovframework.pet.controller;
 
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.egovframe.rte.fdl.cryptography.EgovCryptoService;
 import org.egovframe.rte.fdl.property.EgovPropertyService;
 import org.egovframe.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import egovframework.com.cmm.LoginVO;
 import egovframework.com.cmm.ResponseCode;
 import egovframework.com.cmm.service.EgovCmmUseService;
+import egovframework.com.cmm.service.EgovFileMngService;
+import egovframework.com.cmm.service.FileVO;
 import egovframework.com.cmm.service.ResultVO;
+import egovframework.com.cmm.util.EgovUserDetailsHelper;
+import egovframework.com.cmm.web.EgovFileDownloadController;
+import egovframework.let.cop.bbs.service.BoardMasterVO;
+import egovframework.let.cop.bbs.service.BoardVO;
 import egovframework.pet.service.BoardService;
 import egovframework.pet.vo.BoardTbVO;
 
@@ -49,8 +61,15 @@ public class BoardController {
 	@Resource(name = "BoardService")
 	protected BoardService boardService;
 	
+	@Resource(name = "EgovFileMngService")
+	private EgovFileMngService fileService;
+	
+	/** 암호화서비스 */
+    @Resource(name="egovARIACryptoService")
+    EgovCryptoService cryptoService;
+    
 	/**
-	 * 게시판 마스터 목록을 조회한다.
+	 * 게시글 목록을 조회한다.
 	 *
 	 * @param request
 	 * @param boardMasterVO
@@ -89,5 +108,34 @@ public class BoardController {
 
 		return resultVO;
 	}
+	@RequestMapping(value ="/pet/user/boardDetailAPI.do")	public ResultVO boardDetail(@RequestBody BoardTbVO boardTbVO, HttpServletResponse response, HttpServletRequest request)
+//	@PostMapping(value = "/pet/user/boardDetailAPI.do")
+//	public ResultVO selectBoardDetail(@RequestBody BoardTbVO boardTbVO)
+		throws Exception {
 
+		ResultVO resultVO = new ResultVO();
+		
+		BoardTbVO vo = boardService.selectBoardDetail(boardTbVO);
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap.put("boardTbVO", vo);
+
+		if (vo != null && vo.getAtchFileId() != null && !vo.getAtchFileId().isEmpty()) {
+			FileVO fileVO = new FileVO();
+			fileVO.setAtchFileId(vo.getAtchFileId());
+			List<FileVO> resultFiles = fileService.selectFileInfs(fileVO);
+			
+			// FileId를 유추하지 못하도록 암호화하여 표시한다. (2022.12.06 추가) - 파일아이디가 유추 불가능하도록 조치
+			for (FileVO file : resultFiles) {
+				String toEncrypt = file.atchFileId;
+				file.setAtchFileId(Base64.getEncoder().encodeToString(cryptoService.encrypt(toEncrypt.getBytes(),EgovFileDownloadController.ALGORITM_KEY)));
+			}
+						
+			resultMap.put("resultFiles", resultFiles);
+		}
+
+		resultVO.setResult(resultMap);
+		resultVO.setResultCode(ResponseCode.SUCCESS.getCode());
+		resultVO.setResultMessage(ResponseCode.SUCCESS.getMessage());
+		return resultVO;
+	}
 }

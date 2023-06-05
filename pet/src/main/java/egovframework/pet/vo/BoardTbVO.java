@@ -107,12 +107,12 @@ public class BoardTbVO extends ComDefaultVO implements Serializable {
 		this.userSeq = userSeq;
 	}
 
-	public String getDelete() {
-		return delete;
+	public String getDeleteYn() {
+		return deleteYn;
 	}
 
-	public void setDelete(String delete) {
-		this.delete = delete;
+	public void setDeleteYn(String deleteYn) {
+		this.deleteYn = deleteYn;
 	}
 
 	public String getContentType() {
@@ -152,7 +152,7 @@ public class BoardTbVO extends ComDefaultVO implements Serializable {
 	private int userSeq = 0;
 	
 	/** 삭제여부 */
-	private String delete = "";
+	private String deleteYn = "";
 	
 	/** 게시판 종류 */
 	private String contentType = "";

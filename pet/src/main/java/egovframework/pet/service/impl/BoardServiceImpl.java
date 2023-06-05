@@ -10,6 +10,7 @@ import org.egovframe.rte.fdl.property.EgovPropertyService;
 import org.springframework.stereotype.Service;
 
 import egovframework.com.cmm.service.EgovFileMngService;
+import egovframework.let.cop.bbs.service.BoardVO;
 import egovframework.pet.dao.BoardDAO;
 import egovframework.pet.service.BoardService;
 import egovframework.pet.vo.BoardTbVO;
@@ -61,5 +62,17 @@ public class BoardServiceImpl implements BoardService {
 		map.put("resultCnt", Integer.toString(cnt));
 
 		return map;
+	}
+	
+	/**
+	 * 게시물 대하여 상세 내용을 조회 한다.
+	 *
+	 * @see egovframework.let.cop.bbs.BoardService.service.EgovBBSManageService#selectBoardArticle(egovframework.let.cop.bbs.brd.service.BoardVO)
+	 */
+	@Override
+	public BoardTbVO selectBoardDetail(BoardTbVO vo) throws Exception {
+		boardDAO.updateViews(vo);
+
+		return boardDAO.selectBoardDetail(vo);
 	}
 }
