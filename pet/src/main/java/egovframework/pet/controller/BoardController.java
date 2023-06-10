@@ -12,21 +12,22 @@ import javax.servlet.http.HttpServletResponse;
 import org.egovframe.rte.fdl.cryptography.EgovCryptoService;
 import org.egovframe.rte.fdl.property.EgovPropertyService;
 import org.egovframe.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import egovframework.com.cmm.LoginVO;
 import egovframework.com.cmm.ResponseCode;
 import egovframework.com.cmm.service.EgovCmmUseService;
 import egovframework.com.cmm.service.EgovFileMngService;
+import egovframework.com.cmm.service.EgovFileMngUtil;
 import egovframework.com.cmm.service.FileVO;
 import egovframework.com.cmm.service.ResultVO;
-import egovframework.com.cmm.util.EgovUserDetailsHelper;
 import egovframework.com.cmm.web.EgovFileDownloadController;
-import egovframework.let.cop.bbs.service.BoardMasterVO;
-import egovframework.let.cop.bbs.service.BoardVO;
+import egovframework.let.utl.sim.service.EgovFileScrty;
 import egovframework.pet.service.BoardService;
 import egovframework.pet.vo.BoardTbVO;
 
@@ -50,6 +51,12 @@ import egovframework.pet.vo.BoardTbVO;
  */
 @RestController
 public class BoardController {
+	
+	@Resource(name = "EgovFileMngService")
+	private EgovFileMngService fileMngService;
+
+	@Resource(name = "EgovFileMngUtil")
+	private EgovFileMngUtil fileUtil;
 	
 	/** EgovCmmUseService */
 	@Resource(name = "EgovCmmUseService")
@@ -134,6 +141,43 @@ public class BoardController {
 		}
 
 		resultVO.setResult(resultMap);
+		resultVO.setResultCode(ResponseCode.SUCCESS.getCode());
+		resultVO.setResultMessage(ResponseCode.SUCCESS.getMessage());
+		return resultVO;
+	}
+	
+	/**
+	 * 게시물을 등록한다.
+	 *
+	 * @param multiRequest
+	 * @param boardVO
+	 * @param bindingResult
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@PostMapping(value ="/pet/user/insertBoardAPI.do")
+	public ResultVO insertBoard(final MultipartHttpServletRequest multiRequest,
+		BoardTbVO boardVO,
+		BindingResult bindingResult,
+		HttpServletRequest request)
+		throws Exception {
+		ResultVO resultVO = new ResultVO();
+
+		List<FileVO> result = null;
+		String atchFileId = "";
+
+		final Map<String, MultipartFile> files = multiRequest.getFileMap();
+		if (!files.isEmpty()) {
+			result = fileUtil.parseFileInf(files, "BBS_", 0, "", "");
+			atchFileId = fileMngService.insertFileInfs(result);
+		}
+		boardVO.setAtchFileId(atchFileId);
+		
+		// board.setNttCn(unscript(board.getNttCn())); // XSS 방지
+
+		boardService.insertBoard(boardVO);
+
 		resultVO.setResultCode(ResponseCode.SUCCESS.getCode());
 		resultVO.setResultMessage(ResponseCode.SUCCESS.getMessage());
 		return resultVO;

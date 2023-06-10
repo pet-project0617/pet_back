@@ -75,4 +75,16 @@ public class BoardServiceImpl implements BoardService {
 
 		return boardDAO.selectBoardDetail(vo);
 	}
+
+	/**
+	 * 게시물 등록
+	 *
+	 * @see egovframework.let.cop.bbs.BoardService.service.EgovBBSManageService#selectBoardArticle(egovframework.let.cop.bbs.brd.service.BoardVO)
+	 */
+	@Override
+	public BoardTbVO insertBoard(BoardTbVO vo) throws Exception {
+		boardDAO.insertBoard(vo);
+		
+		return boardDAO.insertBoard(vo);
+	}
 }

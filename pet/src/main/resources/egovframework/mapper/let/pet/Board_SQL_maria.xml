@@ -60,4 +60,16 @@
 			AND seq = #{seq}
  		
  	</update>
+ 	
+ 	<insert id="insertBoard" parameterType="BoardTbVO">
+		
+			INSERT INTO board
+			(seq, user_id, name, title, content, insert_date, ATCH_FILE_ID,
+				user_seq, delete_yn, content_type, views )
+			VALUES
+			( #{seq}, #{userId}, #{name}, #{title}, #{content}, 
+			  SYSDATE() , #{atchFileId}, #{userSeq}, 
+			  #{deleteYn}, #{content_type}, 0)			
+		
+	</insert>
 </mapper>

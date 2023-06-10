@@ -71,4 +71,14 @@ public class BoardDAO extends EgovAbstractMapper {
     public void updateViews(BoardTbVO boardVO) throws Exception {
     	update("BoardDAO.updateViews",boardVO);
     }
+    
+    /**
+     * 게시물 등록
+     *
+     * @param board
+     * @throws Exception
+     */
+    public void insertBoard(BoardTbVO boardVO) throws Exception {
+    	update("BoardDAO.insertBoard",boardVO);
+    }
 }

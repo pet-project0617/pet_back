@@ -44,4 +44,14 @@ public interface BoardService {
 	public BoardTbVO selectBoardDetail(BoardTbVO boardVO)
 	  throws Exception;
 
+	/**
+	 * 게시물 등록
+	 * @return
+	 * 
+	 * @param boardVO
+	 * @exception Exception Exception
+	 */
+	public BoardTbVO insertBoard(BoardTbVO boardVO)
+			throws Exception;
+
 }
